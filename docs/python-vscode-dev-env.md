@@ -4,6 +4,8 @@
 
 现在都流行使用**版本管理工具**安装，比如 Java 的 **Jabba**、Node 的 **NVM**，Python 则是 [**Pyenv**](https://github.com/pyenv/pyenv)。
 
+如果用 uv 可以为每个项目单独安装 Python 虚拟环境。
+
 ```shell
 # 查看安装的python版本和激活的版本
 pyenv versions
@@ -87,7 +89,7 @@ uv add xxx
 uv remove xxx
 # 同步依赖，首次执行会自动创建虚拟环境 .venv
 uv sync 
-# 创建 lockfile 
+# 创建 lockfile (uv.lock)，记录项目依赖的确切版本，确保在不同环境中能够重现相同的依赖关系
 uv lock
 # 查看依赖树
 uv tree
@@ -95,11 +97,51 @@ uv tree
 uv build
 uv publish
 
-# 创建虚拟环境
+# 创建虚拟环境， uv sync 会自动创建虚拟环境
 uv venv
 
 # 其他工具
 # 显示 uv 安装的 Python 版本路径。
 uv python dir
+
+# uv 运行项目
+uv run main.py
 ```
 
+uv 初始化、同步并打包后项目的基本结构:
+
+```shell
+.
+├── .venv				# 虚拟环境
+├── dist				# 编译生成目录
+│   ├── .gitignore	
+│   ├── mysql_mcp_server-0.1.0-py3-none-any.whl	# Linux 下执行 uv build 打包生成的whl文件，whl默认是作为依赖库，如果项目作为应用项目应该使用后面的应用程序发布流程，比如这个示例项目就不应该打包为 wheel 文件
+│   └── mysql_mcp_server-0.1.0.tar.gz			# Linux 下执行 uv build 打包生成的源码包
+├── .python-version		# 使用的python版本
+├── main.py
+├── pyproject.toml
+└── uv.lock
+```
+
+Python 应用程序发布：
+
+没有找到详细说明应该怎么发布的文档，比如发布到 Docker 镜像，看有的开源项目（Dify）推测是将源码目录拷贝到 Docker 工作目录，直接通过 uv run 等指令解释执行。
+
+比如 Dify Dockfile ：
+
+```shell
+WORKDIR /app/api
+...
+COPY pyproject.toml uv.lock ./
+...
+# Copy source code
+COPY . /app/api/
+...
+# entrypoint.sh 中通过 flask run ... 启动应用
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+...
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+```
+
+另外也可以将应用打包成二进制可执行文件。

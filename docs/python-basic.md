@@ -4,7 +4,7 @@
 
 ### 解释执行流程
 
-![](/home/arvin/mywork/python/py-basic/doc/imgs/python-execution-process.png)
+![](imgs/python-execution-process.png)
 
 1. **源代码：** 首先，你编写的Python代码被保存为一个文件，其中包含了程序的源代码。
 2. **词法分析：** Python解释器会对源代码进行词法分析，将代码分割成一系列的词法单元，如关键字、标识符、运算符等。
