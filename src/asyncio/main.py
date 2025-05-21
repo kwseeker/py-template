@@ -14,11 +14,14 @@ def main():
     pid = os.getpid()
     print(f"Current process ID: {pid}")
 
-    # 获取当前运行的事件循环（_get_running_loop()），如果没有事件循环，则按照获取事件循环的策略创建一个新的事件循环
-    # 新的事件循环只会在主线程中创建，即事件循环是依托于主线程的调度器
+    # 获取当前运行的事件循环（_get_running_loop()），如果没有事件循环且当前为主线程，则按照获取事件循环的策略创建一个新的事件循环
+    # 非主线程调用 get_event_loop() 如果当前没有事件循环，则会抛出错误，非主线程需要提前手动 new_event_loop() 创建事件循环
     # 事件循环被保存在 _RunningLoop 类实例的类属性（loop_pid）中, loop_pid 是一个元组
     #   _running_loop.loop_pid = (loop, os.getpid())
-    # 看源码上面这两行代码和 asyncio.run(async_operation1()) 是等价的
+    # _RunningLoop 主要用于多进程，另外事件循环对象还会存储在线程的本地
+    #   self._local._loop = loop
+    # Python 事件循环基于单线程的IO多路复用模型实现
+    # 看源码下面这两行代码和 asyncio.run(async_operation1()) 是等价的
     loop = asyncio.get_event_loop()
     loop.run_until_complete(async_operation1())
 
