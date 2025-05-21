@@ -66,6 +66,10 @@ $ pip uninstall -y flask
 
   这个主题感觉比较护眼，屏幕看久了也不容易疲劳。
 
++ autopep8
+
+  按照 PEP8 规范格式化代码。
+
 ## 包依赖管理工具
 
 ### [UV](https://github.com/astral-sh/uv)
@@ -145,3 +149,15 @@ ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
 ```
 
 另外也可以将应用打包成二进制可执行文件。
+
+## 代码格式化
+
+参考：
+
++ [在 VS Code 中格式化 Python](https://vscode.js.cn/docs/python/formatting)
++ [Formatter extension for Visual Studio Code using autopep8](https://marketplace.visualstudio.com/items?itemName=ms-python.autopep8)
+
+配置好后，按格式化快捷键（Ctrl+Alt+L [这里改为了JetBrain的快捷键], 原始快捷键为 Ctrl+Shift+I）即可格式化Python代码。
+
+## 调试
+
