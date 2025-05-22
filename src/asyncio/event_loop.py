@@ -3,6 +3,7 @@ https://docs.python.org/3/library/asyncio-eventloop.html
 get_event_loop() 用于获取线程事件循环对象，对于主线程来说如果事件循环不存在会主动创建并调用 set_event_loop 存储到主线程线程本地
 非主线程直接调用 get_event_loop() 会抛出错误，需要先 new_event_loop 后 set_event_loop 然后才能 get_event_loop()
 一个线程却可以创建多个事件循环，只不过只有通过 set_event_loop() 事件循环对象才会存储到线程的线程本地
+被关闭的事件循环对象不能再启用，关闭后再次调用 get_event_loop() 会返回同一个事件循环对象
 """
 
 import asyncio

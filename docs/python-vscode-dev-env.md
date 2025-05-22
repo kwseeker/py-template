@@ -89,6 +89,10 @@ uv self update
 
 # uv 初始化项目
 uv init example
+# 如果需要指定某个Python版本而不是使用当前激活的版本
+uv python install 3.8
+uv python list 
+uv python pin 3.8
 uv add xxx
 uv remove xxx
 # 同步依赖，首次执行会自动创建虚拟环境 .venv
@@ -97,12 +101,13 @@ uv sync
 uv lock
 # 查看依赖树
 uv tree
-# 编译并打包
+# 编译并打包, 如果有虚拟环境会使用虚拟环境中的python版本
 uv build
 uv publish
 
 # 创建虚拟环境， uv sync 会自动创建虚拟环境
-uv venv
+uv venv	# 使用当前激活的Python环境
+uv venv -p 3.8	# 指定Python版本
 
 # 其他工具
 # 显示 uv 安装的 Python 版本路径。
@@ -160,4 +165,19 @@ ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
 配置好后，按格式化快捷键（Ctrl+Alt+L [这里改为了JetBrain的快捷键], 原始快捷键为 Ctrl+Shift+I）即可格式化Python代码。
 
 ## 调试
+
+
+
+## 代码编译与反编译
+
+```shell
+# 编译
+python -m compileall demo.py
+# 直接查看python源码编译会生成的字节码
+python -m dis demo.py
+# 反编译： 有三种工具（decompile3、uncompile6、pycdc）但是好像对Python新版本支持的都不好
+decompyle3 __pycache__/main.cpython-38.pyc
+```
+
+Java 使用反编译有一个重要的场景就是理解 Java 中的语法糖实现原理，经过编译和反编译，会将语法糖展现为基础语法实现，使得理解Java 语法糖原理变的很简单。但是对于 Python 貌似不是这样，测试将 Python 装饰器代码编译再反编译语法还是一样，只能从字节码层面理解？
 
