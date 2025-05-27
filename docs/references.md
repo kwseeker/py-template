@@ -1,5 +1,9 @@
 # 参考
 
++ [Python Docs](https://docs.python.org/zh-cn/3.13/index.html) (官方文档)
+
++ [Python Tutorial](https://docs.python.org/zh-cn/3.13/tutorial/) (官方教程)
+
 + [awesome-python](https://github.com/vinta/awesome-python)
 
 + [awesome-python-cn](https://github.com/jobbole/awesome-python-cn)

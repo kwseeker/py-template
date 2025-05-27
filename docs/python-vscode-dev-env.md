@@ -70,6 +70,8 @@ $ pip uninstall -y flask
 
   按照 PEP8 规范格式化代码。
 
++ project manager
+
 ## 包依赖管理工具
 
 ### [UV](https://github.com/astral-sh/uv)
@@ -164,9 +166,89 @@ ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
 
 配置好后，按格式化快捷键（Ctrl+Alt+L [这里改为了JetBrain的快捷键], 原始快捷键为 Ctrl+Shift+I）即可格式化Python代码。
 
-## 调试
+**注释风格**：
 
+推荐 Google 的代码风格。
 
+方法注释：
+
+```python
+def func(path, field_storage, temporary):
+    '''基本描述
+
+    详细描述
+
+    Args:
+        path (str): The path of the file to wrap
+        field_storage (FileStorage): The :class:`FileStorage` instance to wrap
+        temporary (bool): Whether or not to delete the file when the File instance is destructed
+
+    Returns:
+        BufferedFileStorage: A buffered writable file descriptor
+    '''
+    pass
+```
+
+类注释：
+
+将Args Returns 替换为 Attibutes 就是类的注释。
+
+## 代码调试
+
+参考：[Python debugging in VS Code](https://code.visualstudio.com/docs/python/debugging)
+
+主要关注里面的[配置可选项](https://code.visualstudio.com/docs/python/debugging#_set-configuration-options)。
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            // launch: 本地调试 
+            // attach: 远程调试
+            "request": "launch",
+            // 程序入口文件
+            // ${file} 指当前激活的文件，即默认调试当前窗口打开的文件
+            "program": "${file}",
+            // 指定调试器的当前工作目录, 默认为 ${workspaceFolder}， 即 VSCode 打开的文件夹
+            "cwd": "${workspaceFolder}",
+            // "program": "${workspaceFolder}/src/app.py",
+            // integratedTerminal: 在 VSCode 集成终端中执行
+            // externalTerminal: 在外部终端中执行
+            "console": "integratedTerminal",
+            // 添加启动参数 
+            //"args" : ["--port", "1593"]
+            // 是否仅调试用户的代码, 这个默认是 true, 调试依赖的框架代码时一定要改为 false
+            "justMyCode": false
+        }
+    ]
+}
+```
+
+调试时读取某个对象字段或变量的值：
+
+可以在 VSCode DEBUG_CONSOLE 窗口输入表达式并回车查看。
+
+## 单元测试
+
+官方标准库提供了 [unittest](https://docs.python.org/zh-cn/3.13/library/unittest.html#)。
+
+单元测试编码规范（从一些优秀的开源项目总结）：
+
++ 单元测试文件放置到源码根目录下的的专门文件夹，比如 tests；按单元测试、集成测试等划分二级目录；按模块划分三级目录
+
+  ```shell
+  tests
+  ├── artifact_tests		# 依赖测试
+  ├── integration_tests	# 集成测试
+  └── unit_tests			# 单元测试
+  ```
+
++ 单元测试源码文件命名以 test_ 开头，应能清楚地反映出它所测试的模块或功能
+
++ 测试类应该以 Test 开头，不应包含构造函数 `__init__()`
 
 ## 代码编译与反编译
 
@@ -181,3 +263,6 @@ decompyle3 __pycache__/main.cpython-38.pyc
 
 Java 使用反编译有一个重要的场景就是理解 Java 中的语法糖实现原理，经过编译和反编译，会将语法糖展现为基础语法实现，使得理解Java 语法糖原理变的很简单。但是对于 Python 貌似不是这样，测试将 Python 装饰器代码编译再反编译语法还是一样，只能从字节码层面理解？
 
+## 编码规范
+
+官方推荐 [PEP 8](https://peps.python.org/pep-0008/)（Python Enhancement Proposal 8）。
