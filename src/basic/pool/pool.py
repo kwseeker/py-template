@@ -6,6 +6,9 @@ class Pool:
     """连接池
     工作原理：
 
+    正确关闭连接池的方法：
+    1. 优雅关闭： 先调用 close() 方法然后等待关闭完成 wait_closed()
+    2. 立即关闭： 先调用 terminate() 方法然后等待关闭完成 wait_closed()
     """
 
     def __init__(self, minsize, maxsize, echo, pool_recycle, loop, **kwargs):
@@ -23,7 +26,7 @@ class Pool:
         self._used = set()
         # 已终止的连接，终止连接池才会用到
         self._terminated = set()
-        #
+        # 这个异步条件变量
         self._cond = asyncio.Condition()
         self._echo = echo
         self._recycle = pool_recycle
@@ -57,10 +60,11 @@ class Pool:
 
     async def clear(self):
         """清理连接池中所有的空闲连接"""
-        async with self._cond:
+        async with self._cond:      # 这一行的作用从其异步上下文管理器的定义看就是先获取锁，然后执行代码块，最后释放锁，即线程安全地执行代码块
             while self._free:
                 conn = self._free.popleft()
                 await conn.ensure_closed()
+            # TODO 为什么
             self._cond.notify()
 
     @property
@@ -69,22 +73,26 @@ class Pool:
         return self._closed
 
     def close(self):
-        """关闭连接池
-        仅仅设置关闭中的状态，并不会立即关闭正在使用的连接，后续回收的连接会被关闭
+        """关闭连接池，其实是优雅关闭线程池
+        仅仅设置关闭中的状态，并不会立即关闭正在使用的连接，关闭连接池后续回收的连接会被关闭
         拒绝获取新连接
+        需要配合 wait_closed() 使用
         """
         if self._closed:
             return
         self._closing = True
 
     def terminate(self):
-        """立即终止连接池.
+        """立即终止连接池，其实是立即终止使用中的连接
         会立即关闭所有的连接（包括使用中的）
+        需要配合 wait_closed() 使用
         """
         self.close()
         for conn in list(self._used):
             conn.close()
             self._terminated.add(conn)
+        # 为何只清除 _used ? _free 不清除？因为 _free 被清除是借助 wait_closed() 方法实现 ，
+        # 也即 terminate() 也需要配合 wait_closed() 使用
         self._used.clear()
 
     async def wait_closed(self):
@@ -101,24 +109,29 @@ class Pool:
             conn.close()
 
         async with self._cond:
-            while self.size > self.freesize:
+            while self.size > self.freesize:    # 即有正在使用的连接，需要等待这些连接任务执行完成
                 await self._cond.wait()
 
         self._closed = True
 
     def acquire(self):
-        """Acquire free connection from the pool."""
+        """从连接池获取连接并在使用完连接后自动
+        """
         coro = self._acquire()
         return _PoolAcquireContextManager(coro, self)
 
     async def _acquire(self):
+        """从连接池获取连接       
+        如果 _free 中有空闲连接，直接从 _free 获取连接
+        _free 中没有空闲连接则等待 _fill_free_pool() 协程插入空闲连接
+        """
         if self._closing:
             raise RuntimeError("Cannot acquire connection after closing pool")
         async with self._cond:
             while True:
                 await self._fill_free_pool(True)
                 if self._free:
-                    conn = self._free.popleft()
+                    conn = self._free.popleft()     #
                     assert not conn.closed, conn
                     assert conn not in self._used, (conn, self._used)
                     self._used.add(conn)

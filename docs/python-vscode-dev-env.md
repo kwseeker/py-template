@@ -134,6 +134,17 @@ uv 初始化、同步并打包后项目的基本结构:
 └── uv.lock
 ```
 
+修改 uv 镜像源：
+
+```toml
+# pyproject.toml
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+```
+
+
+
 Python 应用程序发布：
 
 没有找到详细说明应该怎么发布的文档，比如发布到 Docker 镜像，看有的开源项目（Dify）推测是将源码目录拷贝到 Docker 工作目录，直接通过 uv run 等指令解释执行。
