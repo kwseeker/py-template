@@ -4,7 +4,10 @@ import collections
 
 class Pool:
     """连接池
+
     工作原理：
+    1. 获取连接
+
 
     正确关闭连接池的方法：
     1. 优雅关闭： 先调用 close() 方法然后等待关闭完成 wait_closed()
@@ -115,7 +118,7 @@ class Pool:
         self._closed = True
 
     def acquire(self):
-        """从连接池获取连接并在使用完连接后自动
+        """从连接池获取连接并在使用完连接后自动恢复到连接池
         """
         coro = self._acquire()
         return _PoolAcquireContextManager(coro, self)
@@ -123,7 +126,7 @@ class Pool:
     async def _acquire(self):
         """从连接池获取连接       
         如果 _free 中有空闲连接，直接从 _free 获取连接
-        _free 中没有空闲连接则等待 _fill_free_pool() 协程插入空闲连接
+        _free 中没有空闲连接则等待 _fill_free_pool() 协程创建并插入空闲连接
         """
         if self._closing:
             raise RuntimeError("Cannot acquire connection after closing pool")

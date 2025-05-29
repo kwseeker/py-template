@@ -4,6 +4,8 @@
 
 + [Python Tutorial](https://docs.python.org/zh-cn/3.13/tutorial/) (官方教程)
 
++ [Python Reference](https://docs.python.org/zh-cn/3.13/reference/index.html) (官方教程)
+
 + [awesome-python](https://github.com/vinta/awesome-python)
 
 + [awesome-python-cn](https://github.com/jobbole/awesome-python-cn)
