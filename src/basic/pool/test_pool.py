@@ -13,7 +13,7 @@ pool = Pool(2, 4, 300, loop=loop)
 async def async_task():
     async with pool.acquire() as conn:
         print(f"use conn object: {conn.info()}, begin: {time.time()}")
-        # 模拟业务同步执行
+        # 模拟业务执行
         await asyncio.sleep(1)
         # time.sleep(1)
         print(f"use conn object: {conn.info()} done, end: {time.time()}")
