@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            // launch: 本地调试 
+            // attach: 远程调试
+            "request": "launch",
+            // 程序入口文件
+            // ${file} 指当前激活的文件，即默认调试当前窗口打开的文件
+            "program": "${file}",
+            // 指定调试器的当前工作目录, 默认为 ${workspaceFolder}， 即 VSCode 打开的文件夹
+            "cwd": "${workspaceFolder}",
+            // 确保将工作目录作为 PYTHONPATH, 不设置这个的话，会将执行的 py 文件所在目录作为 PYTHONPATH
+            // 这个在模块化的工程中也是必设项，除非主文件（比如 main.py）就在 ${workspaceFolder} 根目录下
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            // "program": "${workspaceFolder}/src/app.py",
+            // integratedTerminal: 在 VSCode 集成终端中执行
+            // externalTerminal: 在外部终端中执行
+            "console": "integratedTerminal",
+            // 添加启动参数 
+            //"args" : ["--port", "1593"]
+            // 是否仅调试用户的代码, 这个默认是 true, 调试依赖的框架代码时一定要改为 false
+            "justMyCode": false
+        }
+    ]
+}

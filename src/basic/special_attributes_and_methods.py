@@ -7,20 +7,19 @@
     
     definition.__name__
         类、函数、方法、描述器或生成器实例的名称。
-
     definition.__qualname__
         类、函数、方法、描述器或生成器实例的 qualified name (限定名称)。
         限定名称：一个以点号分隔的名称，显示从模块的全局作用域到该模块中定义的某个类、函数或方法的路径。
         Added in version 3.3.
-
     definition.__module__
         类或函数定义所在的模块的名称。
-
     definition.__doc__
         类或函数的文档字符串，如果未定义则为 None。
-
     definition.__type_params__
         泛型类、函数和 类型别名 的 类型形参。 对于非泛型类和函数，这将为空元组。    
+        
+    container.__iter__()
+        返回一个 iterator 对象。 该对象需要支持下文所述的迭代器协议。 
 """
 
 

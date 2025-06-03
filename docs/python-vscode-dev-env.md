@@ -143,8 +143,6 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 default = true
 ```
 
-
-
 Python 应用程序发布：
 
 没有找到详细说明应该怎么发布的文档，比如发布到 Docker 镜像，看有的开源项目（Dify）推测是将源码目录拷贝到 Docker 工作目录，直接通过 uv run 等指令解释执行。
@@ -225,6 +223,11 @@ def func(path, field_storage, temporary):
             "program": "${file}",
             // 指定调试器的当前工作目录, 默认为 ${workspaceFolder}， 即 VSCode 打开的文件夹
             "cwd": "${workspaceFolder}",
+            // 确保将工作目录作为 PYTHONPATH, 不设置这个的话，会将执行的 py 文件所在目录作为 PYTHONPATH
+            // 这个在模块化的工程中也是必设项，除非主文件（比如 main.py）就在 ${workspaceFolder} 根目录下
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"  
+            },
             // "program": "${workspaceFolder}/src/app.py",
             // integratedTerminal: 在 VSCode 集成终端中执行
             // externalTerminal: 在外部终端中执行
@@ -241,6 +244,21 @@ def func(path, field_storage, temporary):
 调试时读取某个对象字段或变量的值：
 
 可以在 VSCode DEBUG_CONSOLE 窗口输入表达式并回车查看。
+
+**关于各种启动方式下 PYTHONPATH 的默认值** (工程项目推荐后两种方式)：
+
++ **python + .py 文件路径执行** / **使用 Code Runner 插件执行当前文件**
+
+  会将 .py 文件所在目录当作 PYTHONPATH，比如 python src/basic/pythonpath.py ，即将 basic 作为 PYTHONPATH。
+
++ **python -m src.basic.pythonpath**
+
+  PYTHONPATH 是 src 所在的目录。
+
++ **.vscode/launch.json 启动**
+
+  如果不通过 .env 选项指定 PYTHONPATH 的话，同1，即将 py 文件所在目录当作 PYTHONPATH，
+  标准的项目一般将代码文件单独放在代码目录中，所以应该指定 PYTHONPATH。
 
 ## 单元测试
 
@@ -274,6 +292,13 @@ decompyle3 __pycache__/main.cpython-38.pyc
 
 Java 使用反编译有一个重要的场景就是理解 Java 中的语法糖实现原理，经过编译和反编译，会将语法糖展现为基础语法实现，使得理解Java 语法糖原理变的很简单。但是对于 Python 貌似不是这样，测试将 Python 装饰器代码编译再反编译语法还是一样，只能从字节码层面理解？
 
+找了下没有找到什么好的方法，基本只能编译成字节码，然后让AI帮忙分析字节码。
+
 ## 编码规范
 
 官方推荐 [PEP 8](https://peps.python.org/pep-0008/)（Python Enhancement Proposal 8）。
+
+## 其他工具或快捷键
+
++ **查看类的继承关系** -> 类上右键 “Show Type Hierarchy”
++ **查看函数方法的调用链** -> 函数方法上右键 “Show Call Hierarchy” (Ctrl+Alt+H)

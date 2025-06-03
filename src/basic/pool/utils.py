@@ -15,6 +15,7 @@ class _ContextManager(Coroutine):
 
     def __init__(self, coro):
         self._coro = coro
+        # _obj 接收 async with 表达式的返回值
         self._obj = None
 
     def send(self, value):
@@ -92,3 +93,57 @@ class _PoolAcquireContextManager(_ContextManager):
         finally:
             self._pool = None
             self._conn = None
+
+
+class _PoolConnectionContextManager:
+    """Context manager.
+
+    This enables the following idiom for acquiring and releasing a
+    connection around a block:
+
+        with (yield from pool) as conn:
+            cur = yield from conn.cursor()
+
+    while failing loudly when accidentally using:
+
+        with pool:
+            <block>
+    """
+
+    __slots__ = ('_pool', '_conn')
+
+    def __init__(self, pool, conn):
+        self._pool = pool
+        self._conn = conn
+
+    def __enter__(self):
+        assert self._conn
+        return self._conn
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        try:
+            self._pool.release(self._conn)
+        finally:
+            self._pool = None
+            self._conn = None
+
+    async def __aenter__(self):
+        assert not self._conn
+        self._conn = await self._pool.acquire()
+        return self._conn
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        try:
+            await self._pool.release(self._conn)
+        finally:
+            self._pool = None
+            self._conn = None
+
+
+class _ConnectionContextManager(_ContextManager):
+    async def __aexit__(self, exc_type, exc, tb):
+        if exc_type is not None:
+            self._obj.close()
+        else:
+            await self._obj.ensure_closed()
+        self._obj = None

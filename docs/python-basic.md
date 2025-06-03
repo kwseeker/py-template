@@ -16,3 +16,61 @@
 > 前5步的流程称为编译（只是编译成字节码.pyc）。
 >
 > 依赖是在虚拟机中解释执行时加载的。
+
+### 依赖加载流程
+
+和 Java 依赖加载流程类似。也经历了依赖定位、按需导入的流程。不过 Java 依赖包只有字节码，而 Python 可以包含源码文件和字节码文件。
+
+#### 依赖定位
+
+- **搜索路径顺序**：
+
+  1. 当前脚本所在目录
+
+  2. `PYTHONPATH` 环境变量指定的路径
+
+     ```python
+     pythonpath = os.environ.get('PYTHONPATH')
+     ```
+
+  3. 标准库路径（如 `~/.pyenv/versions/3.12.10`）
+
+  4. `site-packages` 目录（用户安装的第三方包）
+
+  可通过 sys.path 查看完整搜索路径：
+
+  ```python
+  import sys
+  print(sys.path)
+  # 比如
+  ['/home/arvin/mywork/python/py-template/src/basic', '/home/arvin/.pyenv/versions/3.12.10/lib/python312.zip', '/home/arvin/.pyenv/versions/3.12.10/lib/python3.12', '/home/arvin/.pyenv/versions/3.12.10/lib/python3.12/lib-dynload', '/home/arvin/.pyenv/versions/3.12.10/lib/python3.12/site-packages']
+  ```
+
++ 模块缓存机制
+
+  首次导入模块时，Python 会：
+
+  1. 编译 `.py` 为 `.pyc` 字节码（存储在 `__pycache__`）
+  2. 将模块对象存入 `sys.modules` 字典
+  3. 后续导入直接使用缓存。
+
+#### 按需导入（Lazy Import）
+
++ 静态分析依赖关系
+
+  通过 `import` 语句建立依赖关系，递归递归处理所有导入的模块。
+
+  ```python
+  import numpy as np          	# 完全导入
+  from pandas import DataFrame 	# 部分导入
+  ```
+
++ 支持动态导入
+
+  程序执行时对导入的包进行导入和移除。
+
+  ```python
+  module = __import__('requests')  # 动态导入
+  ```
+
+  

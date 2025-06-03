@@ -1,11 +1,14 @@
 import asyncio
 import collections
+from src.basic.pool.utils import _PoolAcquireContextManager
+from src.basic.pool.utils import _PoolConnectionContextManager
+from src.basic.pool.conn import connect
 
 
 class Pool:
     """连接池
 
-    工作原理：
+    工作原理：`
     1. 获取连接
 
 
@@ -14,7 +17,7 @@ class Pool:
     2. 立即关闭： 先调用 terminate() 方法然后等待关闭完成 wait_closed()
     """
 
-    def __init__(self, minsize, maxsize, echo, pool_recycle, loop, **kwargs):
+    def __init__(self, minsize, maxsize, pool_recycle, loop, **kwargs):
         if minsize < 0:
             raise ValueError("minsize should be zero or greater")
         if maxsize < minsize and maxsize != 0:
@@ -29,21 +32,23 @@ class Pool:
         self._used = set()
         # 已终止的连接，终止连接池才会用到
         self._terminated = set()
-        # 这个异步条件变量
+        # 这个异步条件变量两个功能：
+        # 1. wait_closed() 中为了等待所有正在使用的连接都被回收完成，然后设置 _closed = True
+        #   每清理一个被使用的连接都会唤醒 wait_closed() 中的循环判断，看被使用的连接是否都被清理完毕
+        # 2. _acquire() 中当 _free 列表为空时，需要等待插入新的连接或回收旧的连接
         self._cond = asyncio.Condition()
-        self._echo = echo
+        # self._echo = echo
         self._recycle = pool_recycle
         # 四种状态
         self._acquiring = 0
-
         # 是否正在关闭连接池
         self._closing = False
         # 连接池是否已经关闭完成
         self._closed = False
 
-    @property
-    def echo(self):
-        return self._echo
+    # @property
+    # def echo(self):
+    #     return self._echo
 
     @property
     def minsize(self):
@@ -94,7 +99,7 @@ class Pool:
         for conn in list(self._used):
             conn.close()
             self._terminated.add(conn)
-        # 为何只清除 _used ? _free 不清除？因为 _free 被清除是借助 wait_closed() 方法实现 ，
+        # 为何只清除 _used， 不清除 _free？因为 _free 被清除是借助 wait_closed() 方法实现，
         # 也即 terminate() 也需要配合 wait_closed() 使用
         self._used.clear()
 
@@ -112,9 +117,8 @@ class Pool:
             conn.close()
 
         async with self._cond:
-            while self.size > self.freesize:    # 即有正在使用的连接，需要等待这些连接任务执行完成
+            while self.size > self.freesize:    # 即有正在使用的连接，需要等待这些连接任务执行完成，全被回收后才能设置 _closed = True
                 await self._cond.wait()
-
         self._closed = True
 
     def acquire(self):
@@ -134,7 +138,7 @@ class Pool:
             while True:
                 await self._fill_free_pool(True)
                 if self._free:
-                    conn = self._free.popleft()     #
+                    conn = self._free.popleft()
                     assert not conn.closed, conn
                     assert conn not in self._used, (conn, self._used)
                     self._used.add(conn)
@@ -146,34 +150,38 @@ class Pool:
         # iterate over free connections and remove timed out ones
         free_size = len(self._free)
         n = 0
-        while n < free_size:
-            conn = self._free[-1]
-            if conn._reader.at_eof() or conn._reader.exception():
-                self._free.pop()
-                conn.close()
 
-            # On MySQL 8.0 a timed out connection sends an error packet before
-            # closing the connection, preventing us from relying on at_eof().
-            # This relies on our custom StreamReader, as eof_received is not
-            # present in asyncio.StreamReader.
-            elif conn._reader.eof_received:
-                self._free.pop()
-                conn.close()
+        # 检查连接的健康状态，异常则直接关闭连接
+        # while n < free_size:
+        #     conn = self._free[-1]
 
-            elif (self._recycle > -1 and
-                  self._loop.time() - conn.last_usage > self._recycle):
-                self._free.pop()
-                conn.close()
+        #     if conn._reader.at_eof() or conn._reader.exception():
+        #         self._free.pop()
+        #         conn.close()
 
-            else:
-                self._free.rotate()
-            n += 1
+        #     On MySQL 8.0 a timed out connection sends an error packet before
+        #     closing the connection, preventing us from relying on at_eof().
+        #     This relies on our custom StreamReader, as eof_received is not
+        #     present in asyncio.StreamReader.
+        #     elif conn._reader.eof_received:
+        #         self._free.pop()
+        #         conn.close()
+
+        #     elif (self._recycle > -1 and
+        #           self._loop.time() - conn.last_usage > self._recycle):
+        #         self._free.pop()
+        #         conn.close()
+
+        #     else:
+        #         self._free.rotate()
+        #     n += 1
 
         while self.size < self.minsize:
             self._acquiring += 1
             try:
-                conn = await connect(echo=self._echo, loop=self._loop,
-                                     **self._conn_kwargs)
+                # conn = await connect(echo=self._echo, loop=self._loop,
+                #                      **self._conn_kwargs)
+                conn = await connect()
                 # raise exception if pool is closing
                 self._free.append(conn)
                 self._cond.notify()
@@ -185,8 +193,9 @@ class Pool:
         if override_min and (not self.maxsize or self.size < self.maxsize):
             self._acquiring += 1
             try:
-                conn = await connect(echo=self._echo, loop=self._loop,
-                                     **self._conn_kwargs)
+                # conn = await connect(echo=self._echo, loop=self._loop,
+                #                      **self._conn_kwargs)
+                conn = await connect()
                 # raise exception if pool is closing
                 self._free.append(conn)
                 self._cond.notify()
@@ -212,14 +221,16 @@ class Pool:
         assert conn in self._used, (conn, self._used)
         self._used.remove(conn)
         if not conn.closed:
-            in_trans = conn.get_transaction_status()
-            if in_trans:
-                conn.close()
-                return fut
+            # in_trans = conn.get_transaction_status()
+            # if in_trans:
+            #     conn.close()
+            #     return fut
             if self._closing:
                 conn.close()
             else:
-                self._free.append(conn)
+                self._free.append(conn)     # 将连接恢复到连接池中
+            # 返回新的任务，这个任务这里不会执行需要后续触发
+            # 所以 release 后如果返回任务需要进一步处理，比如 await xxx
             fut = self._loop.create_task(self._wakeup())
         return fut
 
@@ -233,6 +244,7 @@ class Pool:
         pass  # pragma: nocover
 
     def __iter__(self):
+        # 即实现这个方法是为了支持 yield from pool 语法
         # This is not a coroutine.  It is meant to enable the idiom:
         #
         #     with (yield from pool) as conn:
@@ -245,7 +257,7 @@ class Pool:
         #         <block>
         #     finally:
         #         conn.release()
-        conn = yield from self.acquire()
+        conn = yield from self.acquire()    #
         return _PoolConnectionContextManager(self, conn)
 
     # def __await__(self):
