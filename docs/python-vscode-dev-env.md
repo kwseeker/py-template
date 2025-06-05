@@ -1,6 +1,6 @@
 # Python VSCode 开发环境配置
 
-## Python 安装（Pyenv）
+## 1 Python 安装（Pyenv）
 
 现在都流行使用**版本管理工具**安装，比如 Java 的 **Jabba**、Node 的 **NVM**，Python 则是 [**Pyenv**](https://github.com/pyenv/pyenv)。
 
@@ -40,7 +40,7 @@ $ pip install -U requests 	#更新某个依赖包
 $ pip uninstall -y flask
 ```
 
-## VSCode Python 开发环境配置
+## 2 VSCode Python 开发环境配置
 
 主要是安装一些插件：
 
@@ -72,9 +72,9 @@ $ pip uninstall -y flask
 
 + project manager
 
-## 包依赖管理工具
+## 3 包依赖管理工具
 
-### [UV](https://github.com/astral-sh/uv)
+### 3.1 [UV](https://github.com/astral-sh/uv)
 
 Rust 编写的超快的新一代依赖管理工具，替代 pip、pdm 等。
 
@@ -166,7 +166,7 @@ ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
 
 另外也可以将应用打包成二进制可执行文件。
 
-## 代码格式化
+## 4 代码格式化
 
 参考：
 
@@ -202,7 +202,7 @@ def func(path, field_storage, temporary):
 
 将Args Returns 替换为 Attibutes 就是类的注释。
 
-## 代码调试
+## 5 代码调试
 
 参考：[Python debugging in VS Code](https://code.visualstudio.com/docs/python/debugging)
 
@@ -260,7 +260,7 @@ def func(path, field_storage, temporary):
   如果不通过 .env 选项指定 PYTHONPATH 的话，同1，即将 py 文件所在目录当作 PYTHONPATH，
   标准的项目一般将代码文件单独放在代码目录中，所以应该指定 PYTHONPATH。
 
-## 单元测试
+## 6 单元测试
 
 官方标准库提供了 [unittest](https://docs.python.org/zh-cn/3.13/library/unittest.html#)。
 
@@ -279,7 +279,7 @@ def func(path, field_storage, temporary):
 
 + 测试类应该以 Test 开头，不应包含构造函数 `__init__()`
 
-## 代码编译与反编译
+## 7 代码编译与反编译
 
 ```shell
 # 编译
@@ -294,11 +294,11 @@ Java 使用反编译有一个重要的场景就是理解 Java 中的语法糖实
 
 找了下没有找到什么好的方法，基本只能编译成字节码，然后让AI帮忙分析字节码。
 
-## 编码规范
+## 8 编码规范
 
 官方推荐 [PEP 8](https://peps.python.org/pep-0008/)（Python Enhancement Proposal 8）。
 
-## 其他工具或快捷键
+## 9 其他工具或快捷键
 
 + **查看类的继承关系** -> 类上右键 “Show Type Hierarchy”
 + **查看函数方法的调用链** -> 函数方法上右键 “Show Call Hierarchy” (Ctrl+Alt+H)

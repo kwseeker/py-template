@@ -1,0 +1,210 @@
+{
+  "main": {
+    "id": "8a296fb56d8a5094",
+    "type": "split",
+    "children": [
+      {
+        "id": "14d8bc26fc009019",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f7e483d3405d44dc",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/type_system.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "type_system"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "fa9293c2c6c51fe5",
+    "type": "split",
+    "children": [
+      {
+        "id": "54766315f2e2db47",
+        "type": "tabs",
+        "dimension": 53,
+        "children": [
+          {
+            "id": "7ec4f013d3eaf547",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "342b10eaa56370b4",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "b44309c9af82a063",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      },
+      {
+        "id": "e13bca1d5de9d124",
+        "type": "tabs",
+        "dimension": 47,
+        "children": [
+          {
+            "id": "a2255438272a2631",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "docs/type_system.md",
+                "followCursor": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "type_system 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 373.5
+  },
+  "right": {
+    "id": "b4953794459fd75b",
+    "type": "split",
+    "children": [
+      {
+        "id": "e4115bd83247c406",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f5322c74b0ab7be1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "docs/ai/mcp/mcp-server-mysql.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "mcp-server-mysql 的反向链接列表"
+            }
+          },
+          {
+            "id": "6f1dcaca2934c837",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "docs/ai/mcp/mcp-server-mysql.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "mcp-server-mysql 的出链列表"
+            }
+          },
+          {
+            "id": "02ae5aac9da716e0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "08f275248daab3a1",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "docs/ai/mcp/mcp-server-mysql.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "mcp-server-mysql 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "markdown-importer:打开 Markdown 格式转换器": false
+    }
+  },
+  "active": "f7e483d3405d44dc",
+  "lastOpenFiles": [
+    "docs/type_system_stub_files.md",
+    "docs/type_system.md",
+    "docs/python-vscode-dev-env.md",
+    "docs/python-basic.md",
+    "docs/type_system_typing_module.md",
+    "README.md",
+    "未命名.canvas",
+    "docs/java/jdk/concurrent/ReentrantLock.drawio.png",
+    "docs/java/netty/netty.drawio.png",
+    "docs/ai/cherry-studio/cherry-studio-mcp.md",
+    "docs/ai/mcp/mcp-server-mysql.md",
+    "docs/ai/mcp/mysql-mcp-server-sse.md"
+  ]
+}

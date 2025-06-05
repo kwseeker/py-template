@@ -128,7 +128,7 @@ class Pool:
         return _PoolAcquireContextManager(coro, self)
 
     async def _acquire(self):
-        """从连接池获取连接       
+        """从连接池获取连接
         如果 _free 中有空闲连接，直接从 _free 获取连接
         _free 中没有空闲连接则等待 _fill_free_pool() 协程创建并插入空闲连接
         """
@@ -221,16 +221,13 @@ class Pool:
         assert conn in self._used, (conn, self._used)
         self._used.remove(conn)
         if not conn.closed:
-            # in_trans = conn.get_transaction_status()
-            # if in_trans:
-            #     conn.close()
-            #     return fut
             if self._closing:
                 conn.close()
             else:
-                self._free.append(conn)     # 将连接恢复到连接池中
-            # 返回新的任务，这个任务这里不会执行需要后续触发
-            # 所以 release 后如果返回任务需要进一步处理，比如 await xxx
+                self._free.append(conn)
+                print(f"self._free: {self._free}")
+            # 使用当前事件循环创建任务
+            print(f"release, loop id: {id(self._loop)}")
             fut = self._loop.create_task(self._wakeup())
         return fut
 

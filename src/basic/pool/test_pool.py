@@ -7,6 +7,7 @@ pypath = os.environ.get("PYTHONPATH")
 print(f"pypath: {pypath}")
 
 loop = asyncio.get_event_loop()
+print(f"loop id: {id(loop)}")
 pool = Pool(2, 4, 300, loop=loop)
 
 
@@ -20,8 +21,9 @@ async def async_task():
 
 
 async def test_pool():
-    await asyncio.gather(async_task(), async_task(), async_task(), async_task(),
-                         async_task())
+    tasks = [loop.create_task(async_task()) for _ in range(5)]
+    await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
-    asyncio.run(test_pool())
+    # asyncio.run(test_pool())
+    loop.run_until_complete(test_pool())

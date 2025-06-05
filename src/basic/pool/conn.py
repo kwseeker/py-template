@@ -51,5 +51,5 @@ def connect():
 
 async def _connect():
     conn = await Conn.create()
-    print(f"created new conn, id: {conn.id}")
+    print(f"created new conn, id: {conn.id}, {conn}")
     return conn
