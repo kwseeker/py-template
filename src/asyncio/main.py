@@ -21,7 +21,7 @@ def main():
     # _RunningLoop 主要用于多进程，另外事件循环对象还会存储在线程的本地
     #   self._local._loop = loop
     # Python 事件循环基于单线程的IO多路复用模型实现
-    # 看源码下面这两行代码和 asyncio.run(async_operation1()) 是等价的
+    # 看源码下面这两行代码和 asyncio.run(async_operation1()) 结果相同，但是内部不是等价的，保存 event loop 的线程本地变量不同
     loop = asyncio.get_event_loop()
     loop.run_until_complete(async_operation1())
 

@@ -166,6 +166,23 @@ ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
 
 另外也可以将应用打包成二进制可执行文件。
 
+### 3.2 Conda
+
+号称是全语言包管理器工具，适用于数据科学、跨语言项目、需要系统级依赖的项目。
+
+安装完成后，需要执行 `source activate` 设置环境变量，但是只是临时有效。长期有效需要执行 `conda init` 会自动向 shell 配置文件中添加 Conda 的环境变量初始化代码，但是经测试并不会修改 .zshrc, 所以根据器生成内容手动修改 .zshrc :
+
+```shell
+# \. 中的 . 等同于 source （即在当前 shell 上下文中执行指定脚本的内容，而不是像直接运行脚本那样启动子shell）
+# 加上反斜杠 `\.` 就能确保调用的是 shell 内建的 `.` 命令，而不是任何用户定义的别名。
+\. "/opt/miniconda3/etc/profile.d/conda.sh"
+export PATH=/opt/miniconda3/bin:$PATH
+```
+
+Conda 项目的环境默认存放在 `~/.conda/envs/<project_name>`，不在项目根目录， 可以通过`conda activate <project_name>`激活项目的环境。
+
+[Conda Commands](https://docs.conda.io/projects/conda/en/stable/commands/index.html)
+
 ## 4 代码格式化
 
 参考：
