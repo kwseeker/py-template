@@ -4,7 +4,6 @@
 
 LangGraph 借鉴了 **分布式系统中状态机与图计算模型** 的思想，将 AI Agent 的行为抽象成一个 **有向图（Directed Graph）**，每个节点是一个函数或模块，边代表状态转移。
 
-
 ## 1 参考
 
 + [为什么要用LangGraph](https://2048.csdn.net/68494bb97e10b149bf1f6cd4.html)

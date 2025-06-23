@@ -223,6 +223,7 @@
   },
   "active": "fa7af1d5f9c5a047",
   "lastOpenFiles": [
+    "src/basic/structural_typing.py",
     "src/basic/generic.py",
     "src/basic/decorator_dataclasses.py",
     "src/basic/__pycache__/dataclasses.cpython-312.pyc",
