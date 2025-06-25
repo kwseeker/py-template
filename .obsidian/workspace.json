@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/lib_langgraph.md",
+                "file": "docs/lib_typer.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "lib_langgraph"
+              "title": "lib_typer"
             }
           },
           {
@@ -117,20 +117,20 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/lib_langgraph.md",
+                "file": "docs/lib_typer.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "lib_langgraph 的大纲"
+              "title": "lib_typer 的大纲"
             }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 373.5
+    "width": 326.5
   },
   "right": {
     "id": "b4953794459fd75b",
@@ -223,23 +223,25 @@
   },
   "active": "fa7af1d5f9c5a047",
   "lastOpenFiles": [
+    "src/basic/datamodel_objects.py",
+    "src/basic/typing_annotated.py",
+    "src/basic/annotated.py",
+    "docs/python-vscode-dev-env.md",
+    "docs/lib_typer.md",
+    "src/typer/__pycache__/main.cpython-312.pyc",
+    "src/typer/__pycache__",
+    "src/typer/main.py",
+    "src/typer",
+    "docs/lib_langgraph.md",
     "src/basic/structural_typing.py",
     "src/basic/generic.py",
     "src/basic/decorator_dataclasses.py",
     "src/basic/__pycache__/dataclasses.cpython-312.pyc",
-    "src/basic/dataclasses.py",
-    "src/basic/dataclass.py",
-    "src/basic/literal.py",
     "docs/lib_rich.md",
-    "docs/lib_langgraph.md",
     "docs/stdlib_readline.md",
-    "src/readline/main.py",
     "docs/lib_click.md",
-    "docs/python-vscode-dev-env.md",
-    "src/readline",
     "docs/python-basic.md",
     "docs/datamodel_coroutine.md",
-    "src/asyncio/test_event_loop.py",
     "docs/type_system.md",
     "docs/type_system_stub_files.md",
     "docs/type_system_typing_module.md",
