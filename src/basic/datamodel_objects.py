@@ -12,8 +12,15 @@
         典型的实现通过使用 super().__new__(cls[, ...]) 调用超类的 __new__() 方法并传入适当的参数来创建类的新的实例，然后在返回之前根据需要对新创建的实例进行必要的修改。
         如果 __new__() 在对象构造期间被调用并且它返回了 cls 的实例，那么新实例的 __init__() 方法将像 __init__(self[, ...]) 一样被调用，其中 self 是新实例，其余参数与传递给对象构造器的参数相同。
         如果 __new__() 没有返回 cls 的实例，那么新实例的 __init__() 方法不会被调用。
-        __new__() 主要用于允许不可变类型（如 int、str 或 tuple）的子类自定义实例创建。它也常在自定义元类中被重写，以自定义类的创建。
+        
+        ！！！ 使用场景：
+        __new__() 主要用于允许不可变类型（如 int、str 或 tuple）的子类自定义实例创建。它也常在自定义元类(MetaClass)中被重写，以自定义类的创建。
+        
+        类默认会从父类继承 __new__() 方法，最终是从 object 类继承而来。
+        
     object.__init__(self[, ...])
+        如果基类有一个 __init__() 方法，派生类的 __init__() 方法（如果有），必须显式调用它以确保基类部分的实例正确初始化；例如： super().__init__([args...]) 。
+        
     object.__del__(self)
     object.__repr__(self)
     object.__str__(self)
@@ -66,3 +73,57 @@ if __name__ == '__main__':
     # print(p.__weight)          # 报错, 类外部无法访问私有属性
     print(p2._people__weight)   # 可以访问
     print(p2.__dict__)          # 可以查看对象的所有属性
+
+print("-------------------------------")
+
+# ----------------------------------------------------
+# __new__()
+# 子类有重写 __new__() 则创建实例时调用子类重写的方法，没有重写则会调用父类的方法
+
+
+class A:
+    def __new__(cls):
+        print("A __new__() called")
+
+    def __init__(self):
+        print("A __init__() called")
+
+
+class B(A):
+    # def __new__(cls):
+    #     print("B __new__() called")
+
+    def __init__(self):
+        print("B __init__() called")
+
+
+class C:
+    """
+    If __new__() is invoked during object construction and it returns an instance of cls, then the new instance’s __init__() method will be invoked like __init__(self[, ...]), where self is the new instance and the remaining arguments are the same as were passed to the object constructor.
+    """
+    # def __new__(cls):               # __new__ 存在时，实例化时不会调用 __init__, 因为这里的  __new__() 没有返回 cls 实例
+    #     print("C __new__() called")
+
+    def __init__(self):               # __new__ 不存在时，实例化时会调用 __init__
+        print("C __init__() called")
+
+
+class D:
+    name: str = None
+
+    # def __new__(cls, name: str):               # __new__ 存在时，实例化时不会调用 __init__
+    #     cls.name = name
+    #     print("D __new__() called")
+
+    # def __new__(cls):                          # TypeError: D.__new__() takes 1 positional argument but 2 were given
+    #     print("D __new__() called")
+
+    def __init__(self, name: str):               # __new__ 不存在时，实例化时会调用 __init__
+        self.name = name
+        print("D __init__() called")
+
+
+a = A()
+b = B()
+c = C()
+d = D("Arvin")

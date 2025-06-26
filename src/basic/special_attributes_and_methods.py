@@ -3,7 +3,7 @@
     https://docs.python.org/zh-cn/3.13/library/stdtypes.html#special-attributes
     
     __slots__
-        __slots__ 允许我们显式地声明数据成员（如特征属性）并禁止创建 __dict__ 和 __weakref__ (除非是在 __slots__ 中显式地声明或是在父类中可用。)
+        __slots__ 允许我们显式地声明数据成员（如特征属性）并禁止添加其他属性，还会禁止创建 __dict__ 和 __weakref__ (除非是在 __slots__ 中显式地声明或是在父类中可用。)
     
     definition.__name__
         类、函数、方法、描述器或生成器实例的名称。

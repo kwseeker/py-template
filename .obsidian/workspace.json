@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/lib_rich.md",
+                "file": "docs/lib_pydantic.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "lib_rich"
+              "title": "lib_pydantic"
             }
           },
           {
@@ -49,8 +49,7 @@
               "title": "lib_rich"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -117,13 +116,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/lib_typer.md",
+                "file": "docs/lib_pydantic.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "lib_typer 的大纲"
+              "title": "lib_pydantic 的大纲"
             }
           }
         ]
@@ -221,23 +220,24 @@
       "markdown-importer:打开 Markdown 格式转换器": false
     }
   },
-  "active": "fa7af1d5f9c5a047",
+  "active": "1e4446b84fa2eb7c",
   "lastOpenFiles": [
+    "src/basic/datamodel_metaclasses.py",
+    "src/basic/build_in_functions.py",
+    "src/pydantic/main.py",
+    "src/pydantic",
+    "docs/python-vscode-dev-env.md",
+    "docs/lib_pydantic.md",
+    "docs/lib_rich.md",
+    "docs/lib_typer.md",
     "src/basic/datamodel_objects.py",
     "src/basic/typing_annotated.py",
     "src/basic/annotated.py",
-    "docs/python-vscode-dev-env.md",
-    "docs/lib_typer.md",
     "src/typer/__pycache__/main.cpython-312.pyc",
     "src/typer/__pycache__",
     "src/typer/main.py",
     "src/typer",
     "docs/lib_langgraph.md",
-    "src/basic/structural_typing.py",
-    "src/basic/generic.py",
-    "src/basic/decorator_dataclasses.py",
-    "src/basic/__pycache__/dataclasses.cpython-312.pyc",
-    "docs/lib_rich.md",
     "docs/stdlib_readline.md",
     "docs/lib_click.md",
     "docs/python-basic.md",
