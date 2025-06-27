@@ -11,7 +11,7 @@ S:
 
 
 class Basic:
-    name: str
+    name: str = ""
 
     def __init__(self, name: str):
         self.name = name
@@ -22,12 +22,12 @@ class Basic:
 
 
 class SubCls(Basic):
-    extra: str
+    extra: str = ""
 
-    def __init__(self, name: str, extra: str):
-        super().__init__(name)
-        self.extra = extra
-        print("SubCls init")
+    # def __init__(self, name: str, extra: str):
+    #     super().__init__(name)
+    #     self.extra = extra
+    #     print("SubCls init")
 
     def desc(self):
         super().desc()          # 通过 super() 代理，调用父类方法
@@ -37,7 +37,8 @@ class SubCls(Basic):
         print(f"name: {self.name}, extra: {self.extra}")
 
 
-sco = SubCls("Arvin", "...")  # 默认并不会调用父类的 __init__ 方法， 可以通过 super().__init__() 调用父类的初始化方法，其他方法同理
+# sco = SubCls("Arvin", "...")  # 子类重写 __init__ 后默认并不会调用父类的 __init__ 方法， 可以通过 super().__init__() 调用父类的初始化方法，其他方法同理
+sco = SubCls("Arvin")           # 子类未重写 __init__ 会调用父类的 __init__ 方法
 sco.desc()
 sco.content()
 

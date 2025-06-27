@@ -1,12 +1,16 @@
 """数据模型
 对象、值、类型
 
+python 类最终都继承 class object。
+
 标准类型
 
     Callable 类型 （https://docs.python.org/3/reference/datamodel.html#callable-types）
         包括：用户定义的函数、实例方法、生成器函数、协程函数、异步生成器函数、内置函数、内置方法、类、类实例
 
 特殊方法 (https://docs.python.org/3/reference/datamodel.html#special-method-names)：
+    下面这些特殊方法都继承自 object 类。
+    
     object.__new__(cls[, ...])
         调用以创建类 cls 的新实例。 __new__() 是一个静态方法（特殊处理，因此无需声明），它将请求的类的类作为其第一个参数。其余参数是传递给对象构造表达式（对类的调用）的参数。 __new__() 的返回值应该是新的对象实例（通常是 cls 的实例）。
         典型的实现通过使用 super().__new__(cls[, ...]) 调用超类的 __new__() 方法并传入适当的参数来创建类的新的实例，然后在返回之前根据需要对新创建的实例进行必要的修改。
@@ -111,7 +115,7 @@ class C:
 class D:
     name: str = None
 
-    # def __new__(cls, name: str):               # __new__ 存在时，实例化时不会调用 __init__
+    # def __new__(cls, name: str):               # __new__ 存在时，实例化时不会调用 __init__ 因为这里的  __new__() 没有返回 cls 实例
     #     cls.name = name
     #     print("D __new__() called")
 
@@ -127,3 +131,8 @@ a = A()
 b = B()
 c = C()
 d = D("Arvin")
+
+print("-------------------------------")
+
+# ----------------------------------------------------
+#
