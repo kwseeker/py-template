@@ -3,6 +3,11 @@
 
 在模块中故意在名称定义之前使用该名称称为前向引用。在本节的范围内，我们将任何在 if TYPE_CHECKING: 块中导入或定义的名称也称为前向引用。
 
+注意看到这种代码：
+    def format_msg(self, messages: Union[str, "Message", list[dict], list["Message"], list[str]]) -> list[dict]:
+        ...
+    这里的 "Message" list["Message"] 也属于前向应用，表示 Message 类型， 或 Message 列表类型
+
 pep-0563解决了类型提示中的前向引用问题，但是一些仍然需要使用字面量规避前向引用问题的案例：
 
     <type> 是指某种类型，不是 class type

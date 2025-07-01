@@ -2,6 +2,8 @@
     https://docs.python.org/3/reference/datamodel.html#metaclasses
     https://peps.python.org/pep-3115/
     元类即定义类的类。
+    通过元类可以实现自定义类的创建：https://docs.python.org/3/reference/datamodel.html#customizing-class-creation
+    有点像 Java 的字节码编程。
     
     首先需要理解带三个参数的 type() 和 __new__() 的作用
     

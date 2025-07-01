@@ -3,11 +3,11 @@ Pydantic 是使用最广泛的 Python 数据验证库。
 """
 
 from typing import Any, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, SerializeAsAny
 
 
 class BaseEnvironment(BaseModel, extra="forbid"):
-    # Pydantic 相信你传进来的是合法的对象，它只做最基础的类型判断，不关心对象里面是什么样子的
+    # arbitrary_types_allowed= True ： Pydantic 相信你传进来的是合法的对象，它只做最基础的类型判断，不关心对象里面是什么样子的
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
@@ -108,5 +108,77 @@ class B(BaseModel):
     p2: int
 
 
+class C(B):
+    p3: float
+
+
 b = B(p1='hi', p2=2)        # 子类默认没有定义带参数的构造方法，但是从 BaseModel 继承了带参数的构造方法 def __init__(self, /, **data: Any) -> None:
 # b = B(p1=12, p2='hi')     # 会校验失败
+
+c = C(p1='hi', p2=2, p3=3.0)    # 且所有子类都可以继承带所有属性的构造方法
+print(c)
+print(c.p1)
+
+# ----------------
+# 子类默认没有定义带参数的构造方法，但是从 BaseModel 继承了带参数的构造方法 def __init__(self, /, **data: Any) -> None:
+# Pydantic 通过元类实现了上述功能，这里展示实现原理的模拟，
+# 详细参考 Pydantic ModelMetaclass 的实现
+
+
+class ModelMetaclass(type):
+    # 这里的参数名都是有特殊含义的么？
+    def __new__(cls, name, bases, namespace):
+        # 收集字段注解
+        annotations = namespace.get('__annotations__', {})
+        for base in bases:
+            annotations.update(getattr(base, '__annotations__', {}))
+        namespace['_fields'] = annotations
+
+        # 生成 __init__ 并修改类的 __init__ 方法
+        def __init__(self, **data: Any):
+            for field, type_ in self._fields.items():
+                value = data.get(field)
+                if not isinstance(value, type_):
+                    raise TypeError(f'{field} must be {type_}')
+                setattr(self, field, value)
+        namespace['__init__'] = __init__
+
+        return super().__new__(cls, name, bases, namespace)
+
+
+class X(metaclass=ModelMetaclass):
+    pass
+
+
+class Y(X):
+    y: int
+
+
+class Z(Y):
+    z: float
+
+
+z = Z(y=1, z=2.0)   # 默认并不会赋值， BaseModel 是通过元类实现的
+
+print("-------------------")
+
+# -----------------------------------------------
+# SerializeAsAny
+
+
+class User(BaseModel):
+    name: str
+
+
+class UserLogin(User):
+    password: str
+
+
+class OuterModel(BaseModel):
+    as_any: SerializeAsAny[User]        # SerializeAsAny[<SomeType>] 会按 <SomeType> 类型进行校验，但是序列化时按 Any 类型序列化
+    as_user: User
+    user: Any
+
+
+user = UserLogin(name='pydantic', password='password')
+print(OuterModel(as_any=user, as_user=user, user=user).model_dump())
